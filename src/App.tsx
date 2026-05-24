@@ -38,6 +38,7 @@ function App() {
       title: "ACSP Sismik Veri Analizi",
       description: "AFAD verilerinin Python ile analizi ve büyük depremlerin bölgesel fay hatlarıyla otomatik eşleştirilmesi.",
       tags: ["Python", "Veri Analizi", "Folium"],
+      downloadUrl: "/acsp_proje.zip",
       techDetails: {
         highlights: [
           "Python tabanlı otomatik fay hattı eşleştirme algoritması.",
@@ -325,6 +326,26 @@ function App() {
                 <p className="text-zinc-400">{selectedProject.techDetails.note}</p>
               </div>
             </div>
+
+            {/* ---> YENİ EKLENEN İNDİRME VE KAPATMA BUTONLARI <--- */}
+            <div className="mt-8 flex gap-4">
+              {selectedProject.downloadUrl && (
+                <a
+                  href={selectedProject.downloadUrl}
+                  download
+                  className="flex-1 rounded-xl bg-blue-600 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+                >
+                  ↓ Proje Dosyalarını İndir
+                </a>
+              )}
+              <button
+                onClick={() => setSelectedProject(null)}
+                className="flex-1 rounded-xl border border-zinc-700 bg-zinc-800 py-3 text-sm font-semibold text-white transition-colors hover:bg-zinc-700"
+              >
+                Kapat
+              </button>
+            </div>
+
           </div>
         </div>
       )}
