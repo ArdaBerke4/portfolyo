@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from './supabase';
 import MagicCard from './components/MagicCard';
 import ShimmerButton from './components/ShimmerButton';
+import ProfilFoto from './assets/profil.jpg';
 
 function App() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -162,37 +163,54 @@ function App() {
 
       <main className="relative z-10">
         {/* Hero Section */}
-        <section className="mx-auto flex max-w-7xl flex-col items-center px-4 py-24 text-center sm:px-6 md:py-32">
-          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1.5">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-500 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500" />
-            </span>
-            <span className="font-mono text-xs text-zinc-400">Dokuz Eylül Üniv. · Bilgisayar Müh.</span>
+        <section className="mx-auto flex max-w-7xl flex-col items-center px-4 py-24 sm:px-6 md:py-32">
+          
+          <div className="flex flex-col items-center gap-12 md:flex-row md:items-center md:text-left">
+            {/* FOTOĞRAF ALANI */}
+            <div className="relative flex-shrink-0">
+              <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-2xl" />
+              <img 
+                src={ProfilFoto} 
+                alt="Arda Berke Aday" 
+                className="relative h-48 w-48 rounded-full border-4 border-zinc-800 object-cover shadow-2xl md:h-56 md:w-56"
+              />
+            </div>
+
+            {/* METİN VE BUTON ALANI */}
+            <div className="flex flex-col items-center md:items-start">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1.5">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-500 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500" />
+                </span>
+                <span className="font-mono text-xs text-zinc-400">Dokuz Eylül Üniv. · Bilgisayar Müh.</span>
+              </div>
+
+              <h1 className="font-display max-w-4xl text-4xl font-bold leading-tight tracking-tight text-zinc-100 sm:text-5xl md:text-6xl">
+                Kod ile <span className="text-blue-500">Algoritmaları</span>, <br className="hidden md:block" />
+                Donanım ile <span className="text-blue-500">Performansı</span> Birleştiriyorum.
+              </h1>
+
+              <div className="mt-10 flex gap-4">
+                <a
+                  href="#projeler"
+                  onClick={scrollToSection('projeler')}
+                  className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+                >
+                  Projelerimi Gör
+                </a>
+                <a
+                  href="#iletişim"
+                  onClick={scrollToSection('iletişim')}
+                  className="inline-flex items-center gap-2 rounded-md border border-zinc-700 bg-transparent px-6 py-3 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-900 hover:text-white"
+                >
+                  İletişime Geç
+                </a>
+              </div>
+            </div>
           </div>
 
-          <h1 className="font-display max-w-4xl text-4xl font-bold leading-tight tracking-tight text-zinc-100 sm:text-5xl md:text-6xl">
-            Kod ile <span className="text-blue-500">Algoritmaları</span>, <br className="hidden md:block" />
-            Donanım ile <span className="text-blue-500">Performansı</span> Birleştiriyorum.
-          </h1>
-
-          <div className="mt-10 flex gap-4">
-            <a
-              href="#projeler"
-              onClick={scrollToSection('projeler')}
-              className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700"
-            >
-              Projelerimi Gör
-            </a>
-            <a
-              href="#iletişim"
-              onClick={scrollToSection('iletişim')}
-              className="inline-flex items-center gap-2 rounded-md border border-zinc-700 bg-transparent px-6 py-3 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-900 hover:text-white"
-            >
-              İletişime Geç
-            </a>
-          </div>
-
+          {/* YETKİNLİK KARTLARI (Stack) */}
           <div className="mt-24 grid w-full max-w-5xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {stack.map((card) => (
               <div key={card.label} className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5 text-left transition-colors hover:border-zinc-700">
