@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from './supabase';
+import RetroGrid from './components/RetroGrid'; // Bunu ekledik
 
 function App() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -147,7 +148,7 @@ function App() {
       <div className="pointer-events-none absolute -top-40 -left-40 h-[36rem] w-[36rem] rounded-full bg-indigo-500/20 blur-[120px]" />
       <div className="pointer-events-none absolute -bottom-48 -right-48 h-[40rem] w-[40rem] rounded-full bg-violet-500/15 blur-[120px]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(139,92,246,0.08),transparent_60%)]" />
-      <div className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:64px_64px]" />
+      <RetroGrid />
 
       {/* Navbar */}
       <header className="sticky top-0 z-50">
