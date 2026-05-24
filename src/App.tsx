@@ -5,7 +5,7 @@ function App() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  
+
   // --- Detay Penceresi (Modal) State ---
   const [selectedProject, setSelectedProject] = useState<any | null>(null);
 
@@ -15,7 +15,17 @@ function App() {
     else document.body.style.overflow = 'unset';
   }, [selectedProject]);
 
-  const navLinks = ["Hakkımda", "Projeler", "İletişim"];
+  const navLinks = [
+    { label: "Hakkımda", id: "hakkımda" },
+    { label: "Projeler", id: "projeler" },
+    { label: "İletişim", id: "iletişim" },
+  ];
+
+  // URL'i değiştirmeden manuel smooth-scroll
+  const scrollToSection = (id: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const stack = [
     { label: "Düşük Seviye", value: "C · Java · Algoritma", glyph: "{ }" },
@@ -115,8 +125,9 @@ function App() {
     e.preventDefault();
     setIsSubmitting(true);
     const { error } = await supabase.from('messages').insert([{ name: formData.name, email: formData.email, message: formData.message }]);
-    if (error) setSubmitStatus('error');
-    else {
+    if (error) {
+      setSubmitStatus('error');
+    } else {
       setSubmitStatus('success');
       setFormData({ name: '', email: '', message: '' });
       setTimeout(() => setSubmitStatus('idle'), 3000);
@@ -124,8 +135,14 @@ function App() {
     setIsSubmitting(false);
   };
 
+  const buttonLabel =
+    isSubmitting ? 'Gönderiliyor...' :
+    submitStatus === 'success' ? 'Başarılı!' :
+    submitStatus === 'error' ? 'Hata! Tekrar dene' :
+    'Mesaj Gönder';
+
   return (
-    <div className="relative min-h-screen overflow-hidden bg-ink text-slate-100 font-sans">
+    <div className="relative min-h-screen overflow-x-clip bg-ink text-slate-100 font-sans">
       {/* Dekoratif Arka Plan */}
       <div className="pointer-events-none absolute -top-40 -left-40 h-[36rem] w-[36rem] rounded-full bg-indigo-500/20 blur-[120px]" />
       <div className="pointer-events-none absolute -bottom-48 -right-48 h-[40rem] w-[40rem] rounded-full bg-violet-500/15 blur-[120px]" />
@@ -133,7 +150,7 @@ function App() {
       <div className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:64px_64px]" />
 
       {/* Navbar */}
-      <header className="relative z-10">
+      <header className="sticky top-0 z-50">
         <nav className="mx-auto max-w-7xl px-4 py-5 sm:px-6">
           <div className="flex items-center justify-between rounded-2xl border border-white/[0.06] bg-white/[0.03] px-5 py-3.5 shadow-[0_8px_32px_rgba(0,0,0,0.35)] backdrop-blur-xl">
             <a href="#" className="group flex items-center gap-2.5">
@@ -142,7 +159,14 @@ function App() {
             </a>
             <div className="hidden items-center gap-1 md:flex">
               {navLinks.map((item) => (
-                <a key={item} href={`#${item.toLowerCase()}`} className="rounded-lg px-4 py-2 text-sm text-slate-300 transition-colors duration-200 hover:bg-white/[0.05] hover:text-violet-400">{item}</a>
+                <a
+                  key={item.label}
+                  href={`#${item.id}`}
+                  onClick={scrollToSection(item.id)}
+                  className="rounded-lg px-4 py-2 text-sm text-slate-300 transition-colors duration-200 hover:bg-white/[0.05] hover:text-violet-400"
+                >
+                  {item.label}
+                </a>
               ))}
             </div>
           </div>
@@ -161,9 +185,36 @@ function App() {
           </div>
 
           <h1 className="font-display max-w-5xl text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-            Kod ile <span className="bg-gradient-to-r from-violet-400 via-purple-300 to-fuchsia-400 bg-clip-text text-transparent">Algoritmaları</span>, <br className="hidden md:block" /> 
+            Kod ile <span className="bg-gradient-to-r from-violet-400 via-purple-300 to-fuchsia-400 bg-clip-text text-transparent">Algoritmaları</span>, <br className="hidden md:block" />
             Donanım ile <span className="bg-gradient-to-r from-fuchsia-400 via-purple-300 to-violet-400 bg-clip-text text-transparent">Performansı</span> Birleştiriyorum.
           </h1>
+
+          {/* --- CTA Butonları --- */}
+          <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
+            <a
+              href="#projeler"
+              onClick={scrollToSection('projeler')}
+              className="group relative inline-flex items-center gap-2.5 rounded-xl bg-gradient-to-r from-violet-400 to-fuchsia-400 px-7 py-3.5 text-sm font-semibold tracking-wide text-slate-950 shadow-glow transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glow-lg"
+            >
+              Projelerimi Gör
+              <svg
+                className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2.5}
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+            <a
+              href="#iletişim"
+              onClick={scrollToSection('iletişim')}
+              className="inline-flex items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-7 py-3.5 text-sm font-medium text-slate-200 backdrop-blur-md transition-all hover:border-white/[0.16] hover:bg-white/[0.08]"
+            >
+              İletişime Geç
+            </a>
+          </div>
 
           <div className="mt-20 grid w-full max-w-5xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {stack.map((card) => (
@@ -178,7 +229,7 @@ function App() {
           </div>
         </section>
 
-        {/* --- YENİ: Hakkımda Section --- */}
+        {/* --- Hakkımda Section --- */}
         <section id="hakkımda" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 border-t border-white/[0.05]">
           <div className="mb-14">
             <h2 className="font-display text-3xl font-bold text-white md:text-5xl">Kısaca <span className="text-violet-400">Ben</span></h2>
@@ -195,14 +246,14 @@ function App() {
                 Teknik yetkinliklerimi iletişim ve liderlik becerileriyle harmanlayarak, teknoloji odaklı projelere mühendislik vizyonuyla değer katmayı hedefliyorum.
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6 backdrop-blur-xl transition-all hover:border-violet-400/30">
                 <h3 className="mb-2 font-mono text-[10px] uppercase tracking-widest text-violet-400">Eğitim</h3>
                 <p className="font-display text-lg font-semibold text-white">Dokuz Eylül Üniv.</p>
-                <p className="mt-1 text-sm text-slate-400">Bilgisayar Mühendisliği<br/>2. Sınıf</p>
+                <p className="mt-1 text-sm text-slate-400">Bilgisayar Mühendisliği<br />2. Sınıf</p>
               </div>
-              
+
               <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6 backdrop-blur-xl transition-all hover:border-violet-400/30">
                 <h3 className="mb-2 font-mono text-[10px] uppercase tracking-widest text-violet-400">Topluluk & Liderlik</h3>
                 <p className="font-display text-lg font-semibold text-white">İK Koordinatörü</p>
@@ -244,7 +295,7 @@ function App() {
                     <span key={tag} className="rounded-md border border-white/[0.06] bg-white/[0.04] px-2.5 py-1 font-mono text-[10px] uppercase text-slate-300">{tag}</span>
                   ))}
                 </div>
-                <button 
+                <button
                   onClick={() => setSelectedProject(project)}
                   className="mt-8 inline-flex items-center justify-between text-sm font-medium text-violet-400 hover:text-violet-300 transition-colors"
                 >
@@ -257,32 +308,45 @@ function App() {
 
         {/* İletişim Formu */}
         <section id="iletişim" className="mx-auto max-w-7xl px-4 py-20 border-t border-white/[0.05]">
-            <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
-                <div>
-                    <h2 className="font-display text-4xl font-bold text-white">Birlikte <span className="text-violet-400">üretelim.</span></h2>
-                    <p className="mt-4 text-slate-400">ardaberke221@gmail.com</p>
-                </div>
-                <form onSubmit={handleSubmit} className="space-y-4 rounded-3xl border border-white/[0.08] bg-white/[0.03] p-8">
-                    <input 
-                      type="text" required placeholder="İsim" 
-                      value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})}
-                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 outline-none text-white focus:border-violet-400/50" 
-                    />
-                    <input 
-                      type="email" required placeholder="E-Posta" 
-                      value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 outline-none text-white focus:border-violet-400/50" 
-                    />
-                    <textarea 
-                      rows={4} required placeholder="Mesajınız" 
-                      value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})}
-                      className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 outline-none text-white focus:border-violet-400/50" 
-                    />
-                    <button type="submit" disabled={isSubmitting} className="w-full rounded-xl bg-violet-500 py-4 font-bold text-white transition-all hover:bg-violet-400">
-                        {isSubmitting ? 'Gönderiliyor...' : submitStatus === 'success' ? 'Başarılı!' : 'Mesaj Gönder'}
-                    </button>
-                </form>
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
+            <div>
+              <h2 className="font-display text-4xl font-bold text-white">Birlikte <span className="text-violet-400">üretelim.</span></h2>
+              <p className="mt-4 text-slate-400">ardaberke221@gmail.com</p>
             </div>
+            <form onSubmit={handleSubmit} className="space-y-4 rounded-3xl border border-white/[0.08] bg-white/[0.03] p-8">
+              <input
+                type="text"
+                required
+                placeholder="İsim"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 outline-none text-white focus:border-violet-400/50"
+              />
+              <input
+                type="email"
+                required
+                placeholder="E-Posta"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 outline-none text-white focus:border-violet-400/50"
+              />
+              <textarea
+                rows={4}
+                required
+                placeholder="Mesajınız"
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 outline-none text-white focus:border-violet-400/50"
+              />
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full rounded-xl bg-violet-500 py-4 font-bold text-white transition-all hover:bg-violet-400 disabled:opacity-60"
+              >
+                {buttonLabel}
+              </button>
+            </form>
+          </div>
         </section>
 
         <footer className="py-10 text-center font-mono text-xs text-slate-600">
@@ -293,18 +357,18 @@ function App() {
       {/* --- PROJE DETAY PENCERESİ (MODAL) --- */}
       {selectedProject && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 backdrop-blur-md">
-          <div 
-            className="absolute inset-0 bg-ink/60" 
-            onClick={() => setSelectedProject(null)} 
+          <div
+            className="absolute inset-0 bg-ink/60"
+            onClick={() => setSelectedProject(null)}
           />
           <div className="relative w-full max-w-2xl overflow-hidden rounded-3xl border border-white/[0.1] bg-white/[0.05] p-8 shadow-2xl backdrop-blur-2xl">
-            <button 
+            <button
               onClick={() => setSelectedProject(null)}
               className="absolute right-6 top-6 text-slate-400 hover:text-white"
             >
               ✕
             </button>
-            
+
             <div className="mb-6 flex items-center gap-4">
               <div className="h-10 w-10 text-violet-400">{selectedProject.icon}</div>
               <h3 className="font-display text-2xl font-bold text-white">{selectedProject.title}</h3>
@@ -332,8 +396,8 @@ function App() {
                 <p className="italic text-slate-400">{selectedProject.techDetails.note}</p>
               </div>
             </div>
-            
-            <button 
+
+            <button
               onClick={() => setSelectedProject(null)}
               className="mt-8 w-full rounded-xl bg-white/[0.05] py-3 text-sm font-semibold hover:bg-white/[0.1] text-white transition-colors"
             >
